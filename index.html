@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>VATE SoftSys | AI • EdTech • Staffing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --primary: #22d3ee;
+            --primary-glow: rgba(34, 211, 238, 0.3);
+            --bg-dark: #020617;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- BASE STYLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0; z-index: -1;
+            width: 100%; height: 100%; opacity: 0.35;
+        }
+
+        .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed; width: 100%; z-index: 100;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .nav-inner {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 0;
+        }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.5rem; }
+        .logo img { width: 35px; height: 35px; border-radius: 4px; }
+        .logo span { color: var(--primary); }
+
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a {
+            text-decoration: none; color: var(--text-muted);
+            font-size: 12px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1px; transition: var(--transition);
+            position: relative;
+        }
+        .nav-links a:hover { color: white; }
+        .nav-links a::after {
+            content: ''; position: absolute; width: 0; height: 2px;
+            bottom: -5px; left: 0; background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after { width: 100%; }
+
+        .btn-contact {
+            background: var(--primary); color: var(--bg-dark);
+            padding: 0.6rem 1.5rem; border-radius: 50px;
+            font-weight: 700; text-decoration: none; font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        .btn-contact:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--primary-glow); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            padding: 12rem 0 8rem 0;
+            text-align: center;
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .hero h1 { font-size: clamp(3rem, 10vw, 6rem); font-weight: 800; line-height: 1; margin-bottom: 1.5rem; }
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 30%, var(--primary) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero p { font-size: 1.25rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 3rem; }
+        .hero-btns { display: flex; justify-content: center; gap: 1rem; }
+
+        .btn-main {
+            padding: 1rem 2rem; border-radius: 50px; font-weight: 700;
+            cursor: pointer; transition: var(--transition); border: none;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .btn-white { background: white; color: black; }
+        .btn-white:hover { background: var(--primary); }
+        .btn-glass { background: var(--card-bg); color: white; border: 1px solid var(--border-color); }
+        .btn-glass:hover { background: rgba(255,255,255,0.1); }
+
+        /* --- SECTIONS --- */
+        .section-title { margin-bottom: 4rem; }
+        .section-title h2 { font-size: 2.5rem; font-weight: 800; }
+        .underline { width: 60px; height: 4px; background: var(--primary); margin-top: 10px; }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* --- CARDS & SPOTLIGHT --- */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        .glass-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.06);
+        }
+        .glass-card::before {
+            content: ""; position: absolute; inset: 0;
+            background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(34, 211, 238, 0.1), transparent 40%);
+            z-index: 0; pointer-events: none;
+        }
+        .glass-card i { color: var(--primary); margin-bottom: 1.5rem; display: block; }
+        .glass-card h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .glass-card p { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* --- INITIATIVES SECTION --- */
+        .initiatives { background: rgba(34, 211, 238, 0.02); padding: 8rem 0; border-top: 1px solid var(--border-color); }
+        .init-card { border-left: 4px solid var(--primary); cursor: pointer; }
+        .badge {
+            font-size: 10px; background: rgba(34, 211, 238, 0.2);
+            color: var(--primary); padding: 4px 8px; border-radius: 4px;
+        }
+
+        /* --- ANIMATIONS --- */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- FOOTER --- */
+        footer { padding: 5rem 0 3rem; border-top: 1px solid var(--border-color); }
+        .footer-grid {
+            display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem;
+        }
+        .footer-grid h5 { font-size: 1.1rem; margin-bottom: 1.5rem; color: white; }
+        .footer-grid ul { list-style: none; }
+        .footer-grid ul li { margin-bottom: 0.8rem; }
+        .footer-grid a { color: var(--text-muted); text-decoration: none; transition: 0.3s; }
+        .footer-grid a:hover { color: var(--primary); }
+        .copy { text-align: center; font-size: 0.7rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+
+        /* --- RESPONSIVENESS --- */
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .hero h1 { font-size: 3.5rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<nav>
+    <div class="container nav-inner">
+        <div class="logo">
+            <img src="vsslogo.png" alt="Logo">
+            <div>VATE <span>SoftSys Pvt. Ltd.</span></div>
+        </div>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#edtech">EdTech</a>
+            <a href="#staffing">Staffing</a>
+            <a href="#ai">AI Solutions</a>
+            <a href="#about">About</a>
+            <a href="#resources">Resources</a>
+        </div>
+        <a href="#contact" class="btn-contact">Contact Us</a>
+    </div>
+</nav>
+
+<section id="home" class="hero container">
+    <h1 class="reveal">Intelligence <br/><span class="gradient-text">Redefined.</span></h1>
+    <p class="reveal" style="transition-delay: 0.2s">VATE SoftSys bridges the gap between workforce potential and the AI revolution.</p>
+    <div class="hero-btns reveal" style="transition-delay: 0.4s">
+        <button class="btn-main btn-white">Partner With Us <i data-lucide="arrow-up-right"></i></button>
+        <button class="btn-main btn-glass">View Resources</button>
+    </div>
+</section>
+
+<section class="container" style="padding-bottom: 8rem;">
+    <div class="section-title reveal">
+        <h2>Core <span style="color:var(--primary)">Solutions</span></h2>
+        <div class="underline"></div>
+    </div>
+
+    <div class="grid-layout">
+        <div class="glass-card spotlight-card reveal">
+            <i data-lucide="home" size="36"></i>
+            <h3>Home</h3>
+            <p>Our ecosystem overview, core philosophy, and high-impact digital transformation roadmap.</p>
+        </div>
+        <div id="staffing" class="glass-card spotlight-card reveal">
+            <i data-lucide="users" size="36"></i>
+            <h3>Staffing & Talent</h3>
+            <p>End-to-end talent acquisition, AI screening, and specialized workforce readiness programs.</p>
+        </div>
+        <div id="ai" class="glass-card spotlight-card reveal">
+            <i data-lucide="brain-circuit" size="36"></i>
+            <h3>AI & GenAI Solutions</h3>
+            <p>Custom LLM architectures, Enterprise Copilots, and Generative AI implementation labs.</p>
+        </div>
+        <div id="about" class="glass-card spotlight-card reveal">
+            <i data-lucide="info" size="36"></i>
+            <h3>About VATE SoftSys</h3>
+            <p>Deep dive into our history, mission to democratize AI, and the experts driving our vision.</p>
+        </div>
+        <div id="resources" class="glass-card spotlight-card reveal">
+            <i data-lucide="layers" size="36"></i>
+            <h3>Resources</h3>
+            <p>Stay updated with our technical blogs, industrial case studies, and upcoming tech events.</p>
+        </div>
+        <div id="contact" class="glass-card spotlight-card reveal">
+            <i data-lucide="handshake" size="36"></i>
+            <h3>Partner With Us</h3>
+            <p>Ready to scale? Connect with our team for strategic partnerships and business inquiries.</p>
+        </div>
+    </div>
+</section>
+
+<section class="initiatives">
+    <div class="container">
+        <div class="section-title reveal" style="text-align: center;">
+            <h2>Quick <span style="color:var(--primary)">Initiatives</span></h2>
+            <p style="color: var(--text-muted); margin-top: 10px;">Launch a project or join our ecosystem in minutes.</p>
+        </div>
+
+        <div class="grid-layout">
+            <div class="glass-card init-card reveal">
+                <div style="display:flex; justify-content:space-between; margin-bottom:1rem">
+                    <i data-lucide="graduation-cap"></i>
+                    <span class="badge">POPULAR</span>
+                </div>
+                <h4>GenAI 60-Hour Flagship</h4>
+                <p>Enroll in our comprehensive industry-ready AI course.</p>
+            </div>
+
+            <div class="glass-card init-card reveal">
+                <i data-lucide="file-badge"></i>
+                <h4>College Partnership</h4>
+                <p>MOU landing for institutional collaborations.</p>
+            </div>
+
+            <div class="glass-card init-card reveal">
+                <i data-lucide="upload-cloud"></i>
+                <h4>Submit Hiring Requirement</h4>
+                <p>Upload JD and get AI-matched candidate profiles.</p>
+            </div>
+
+            <div class="glass-card init-card reveal">
+                <i data-lucide="phone-call"></i>
+                <h4>Book AI Discovery Call</h4>
+                <p>Share your problem statement with our experts.</p>
+            </div>
+
+            <div class="glass-card init-card reveal">
+                <i data-lucide="file-text"></i>
+                <h4>Case Study Template</h4>
+                <p>Download our repeatable framework for success.</p>
+            </div>
+
+            <div class="glass-card init-card reveal">
+                <i data-lucide="calendar"></i>
+                <h4>Workshop Registration</h4>
+                <p>Join our next technical event or AI workshop.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="container">
+    <div class="footer-grid">
+        <div>
+           
+            <div class="logo" style="margin-bottom: 1.5rem;">  <img src="vsslogo.png" alt="Logo"> VATE  SoftSys Pvt.Ltd.</div>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Building future-ready talent and intelligent AI systems for the next generation of global enterprises.</p>
+        </div>
+        <div>
+            <h5>Links</h5>
+            <ul>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Success Stories</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+            </ul>
+        </div>
+        <div>
+            <h5>Connect</h5>
+            <ul>
+                <li><a href="https://www.linkedin.com/company/vate-tech/">LinkedIn</a></li>
+                <li><a href="#">Twitter</a></li>
+                <li><a href="mailto:vatedigital@gmail.com">Mail</a></li>
+                <li><a href="https://www.facebook.com/people/Vate-Digi/pfbid02zfG5x1FdR7JwK19N9oecWWMt5EPLHBtooDajPijhEiTxSNkVByZVtjaXy8XT6Pi6l/">Facebook</a></li>
+                <li><a href="#">Contact Support</a></li>
+            </ul>
+        </div>
+    </div>
+    <p class="copy">© 2025 VATE SoftSys. All Rights Reserved.</p>
+</footer>
+
+<script>
+    // Initialize Icons
+    lucide.createIcons();
+
+    // Neural Canvas Background logic
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.speedX = Math.random() * 0.4 - 0.2;
+            this.speedY = Math.random() * 0.4 - 0.2;
+        }
+        update() {
+            this.x += this.speedX; this.y += this.speedY;
+            if (this.x > canvas.width) this.x = 0; if (this.x < 0) this.x = canvas.width;
+            if (this.y > canvas.height) this.y = 0; if (this.y < 0) this.y = canvas.height;
+        }
+    }
+    for (let i = 0; i < 70; i++) particles.push(new Particle());
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'rgba(34, 211, 238, 0.4)';
+        particles.forEach(p => {
+            p.update();
+            ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI * 2); ctx.fill();
+        });
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i; j < particles.length; j++) {
+                const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
+                if (dist < 140) {
+                    ctx.strokeStyle = `rgba(34, 211, 238, ${0.12 - dist/1000})`;
+                    ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
+                }
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Spotlight Mouse Tracker
+    document.addEventListener('mousemove', e => {
+        document.querySelectorAll('.spotlight-card, .init-card').forEach(card => {
+            const rect = card.getBoundingClientRect();
+            card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+            card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+        });
+    });
+
+    // Intersection Observer for staggered entrance animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                // Add a small delay based on index for grid items
+                setTimeout(() => {
+                    entry.target.classList.add('active');
+                }, index * 50); 
+            }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
