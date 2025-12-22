@@ -33,18 +33,29 @@
             line-height: 1.6;
         }
 
+        /* --- FIXED BACKGROUND ANIMATION --- */
         #bg-canvas {
             position: fixed;
-            top: 0; left: 0; z-index: -1;
-            width: 100%; height: 100%; opacity: 0.35;
+            top: 0; 
+            left: 0; 
+            z-index: 0; /* Layered above body but below content */
+            width: 100%; 
+            height: 100%; 
+            pointer-events: none; /* Allows interaction with buttons underneath */
         }
 
-        .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+        .container { 
+            max-width: 1300px; 
+            margin: 0 auto; 
+            padding: 0 2rem; 
+            position: relative; 
+            z-index: 2; /* Ensures text is always on top */
+        }
 
         /* --- NAVIGATION --- */
         nav {
             position: fixed; width: 100%; z-index: 100;
-            background: rgba(2, 6, 23, 0.8);
+            background: rgba(2, 6, 23, 0.85);
             backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--border-color);
         }
@@ -71,7 +82,6 @@
         }
         .nav-links a:hover::after { width: 100%; }
 
-        /* Mobile Menu Toggle */
         .mobile-toggle { display: none; background: none; border: none; color: white; cursor: pointer; }
 
         .btn-contact {
@@ -81,20 +91,6 @@
             transition: var(--transition);
         }
         .btn-contact:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--primary-glow); }
-
-        .btn-selection {
-            width: 100%;
-            display: block;
-            color: white;
-            font-family: var(--font-main);
-        }
-        .btn-selection:hover {
-            box-shadow: 0 0 30px var(--primary-glow);
-            transform: scale(1.02) translateY(-5px) !important;
-        }
-        .btn-selection h3 {
-            margin-bottom: 0 !important;
-        }
 
         /* --- HERO SECTION --- */
         .hero {
@@ -125,6 +121,7 @@
         .btn-glass:hover { background: rgba(255,255,255,0.1); }
 
         /* --- SECTIONS --- */
+        section { position: relative; z-index: 2; }
         .section-title { margin-bottom: 4rem; }
         .section-title h2 { font-size: 2.5rem; font-weight: 800; }
         .underline { width: 60px; height: 4px; background: var(--primary); margin-top: 10px; }
@@ -135,9 +132,18 @@
             gap: 1.5rem;
         }
 
+        .btn-selection {
+            width: 100%; display: block; color: white; border: none;
+            font-family: var(--font-main); background: var(--card-bg);
+        }
+        .btn-selection:hover {
+            box-shadow: 0 0 30px var(--primary-glow);
+            transform: scale(1.02) translateY(-5px) !important;
+        }
+
         /* --- CARDS & SPOTLIGHT --- */
         .glass-card {
-            background: var(--card-bg);
+            background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
             border: 1px solid var(--border-color);
             border-radius: 24px;
@@ -151,17 +157,16 @@
             border-color: var(--primary);
             background: rgba(255,255,255,0.06);
         }
-        .glass-card::before {
-            content: ""; position: absolute; inset: 0;
-            background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(34, 211, 238, 0.1), transparent 40%);
-            z-index: 0; pointer-events: none;
-        }
         .glass-card i { color: var(--primary); margin-bottom: 1.5rem; display: block; }
-        .glass-card h3 { font-size: 1.5rem; margin-bottom: 1rem; }
-        .glass-card p { color: var(--text-muted); font-size: 0.95rem; }
 
         /* --- INITIATIVES SECTION --- */
-        .initiatives { background: rgba(34, 211, 238, 0.02); padding: 8rem 0; border-top: 1px solid var(--border-color); }
+        .initiatives { 
+            background: rgba(34, 211, 238, 0.02); 
+            padding: 8rem 0; 
+            border-top: 1px solid var(--border-color);
+            position: relative;
+            z-index: 2;
+        }
         .init-card { border-left: 4px solid var(--primary); cursor: pointer; }
         .badge {
             font-size: 10px; background: rgba(34, 211, 238, 0.2);
@@ -173,10 +178,8 @@
         .reveal.active { opacity: 1; transform: translateY(0); }
 
         /* --- FOOTER --- */
-        footer { padding: 5rem 0 3rem; border-top: 1px solid var(--border-color); }
-        .footer-grid {
-            display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem;
-        }
+        footer { padding: 5rem 0 3rem; border-top: 1px solid var(--border-color); position: relative; z-index: 2; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
         .footer-grid h5 { font-size: 1.1rem; margin-bottom: 1.5rem; color: white; }
         .footer-grid ul { list-style: none; }
         .footer-grid ul li { margin-bottom: 0.8rem; }
@@ -186,24 +189,19 @@
         .social-links { display: flex; gap: 15px; margin-top: 1.5rem; flex-wrap: wrap; }
         .social-link { color: var(--text-muted); transition: 0.3s; }
         .social-link:hover { color: var(--primary); transform: translateY(-3px); }
-
         .copy { text-align: center; font-size: 0.7rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
 
         /* --- RESPONSIVENESS --- */
         @media (max-width: 900px) {
             .nav-links { 
-                display: none; 
-                position: absolute; top: 100%; left: 0; width: 100%; 
+                display: none; position: absolute; top: 100%; left: 0; width: 100%; 
                 background: var(--bg-dark); flex-direction: column; 
                 padding: 2rem; border-bottom: 1px solid var(--border-color);
-                text-align: center;
             }
             .nav-links.active { display: flex; }
             .mobile-toggle { display: block; font-size: 1.5rem; }
             .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
             .hero h1 { font-size: 3.5rem; }
-            .hero-btns { flex-direction: column; align-items: center; }
-            .btn-main { width: 100%; max-width: 300px; justify-content: center; }
             .logo span { display: none; } 
         }
     </style>
@@ -406,10 +404,15 @@
         lucide.createIcons();
     });
 
+    // --- ENHANCED CANVAS ANIMATION ---
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+
+    function resize() { 
+        canvas.width = window.innerWidth; 
+        canvas.height = window.innerHeight; 
+    }
     window.addEventListener('resize', resize);
     resize();
 
@@ -417,8 +420,8 @@
         constructor() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.speedX = Math.random() * 0.4 - 0.2;
-            this.speedY = Math.random() * 0.4 - 0.2;
+            this.speedX = Math.random() * 0.5 - 0.25;
+            this.speedY = Math.random() * 0.5 - 0.25;
         }
         update() {
             this.x += this.speedX; this.y += this.speedY;
@@ -426,22 +429,32 @@
             if (this.y > canvas.height) this.y = 0; if (this.y < 0) this.y = canvas.height;
         }
     }
-    for (let i = 0; i < 70; i++) particles.push(new Particle());
+    for (let i = 0; i < 80; i++) particles.push(new Particle());
 
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'rgba(34, 211, 238, 0.4)';
+        
+        // Brighter particle color
+        ctx.fillStyle = 'rgba(34, 211, 238, 0.6)'; 
+        
         particles.forEach(p => {
             p.update();
-            ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); 
+            ctx.arc(p.x, p.y, 1.2, 0, Math.PI * 2); 
+            ctx.fill();
         });
+
         for (let i = 0; i < particles.length; i++) {
             for (let j = i; j < particles.length; j++) {
                 const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
-                if (dist < 140) {
-                    ctx.strokeStyle = `rgba(34, 211, 238, ${0.12 - dist/1000})`;
-                    ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
+                if (dist < 160) {
+                    // Increased line visibility
+                    ctx.strokeStyle = `rgba(34, 211, 238, ${0.25 - dist/600})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.beginPath(); 
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y); 
+                    ctx.stroke();
                 }
             }
         }
@@ -449,6 +462,7 @@
     }
     animate();
 
+    // Spotlight Effect for Cards
     document.addEventListener('mousemove', e => {
         document.querySelectorAll('.spotlight-card, .init-card, .btn-selection').forEach(card => {
             const rect = card.getBoundingClientRect();
